@@ -23,10 +23,6 @@ func SetUpDBConnection() *gorm.DB {
 		log.Fatal(err)
 	}
 
-	if err = CreateTables(db); err != nil {
-		log.Fatal(err)
-	}
-
 	return db
 }
 
