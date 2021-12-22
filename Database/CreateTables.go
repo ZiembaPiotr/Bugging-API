@@ -1,15 +1,10 @@
 package Database
 
 import (
-	"gorm.io/gorm"
 	"log"
 )
 
 //unused code prepared (not finished) to check if table exist and then create one
-
-type Database struct {
-	Database *gorm.DB
-}
 
 func (db *Database) CreateTables() error {
 	if err := db.createNewTable("clubssss"); err != nil {

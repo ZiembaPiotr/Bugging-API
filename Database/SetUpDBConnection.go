@@ -1,6 +1,7 @@
 package Database
 
 import (
+	"backend-BD/Entities"
 	"errors"
 	"fmt"
 	"github.com/joho/godotenv"
@@ -10,20 +11,28 @@ import (
 	"os"
 )
 
+type Database struct {
+	Database *gorm.DB
+}
+
 func SetUpDBConnection() *gorm.DB {
 	var psqlInfo string
 	var err error
-	var db *gorm.DB
+	var db Database
 
 	if psqlInfo, err = generatePsqlInfo(); err != nil {
 		log.Fatal(err)
 	}
 
-	if db, err = gorm.Open(postgres.Open(psqlInfo)); err != nil {
+	if db.Database, err = gorm.Open(postgres.Open(psqlInfo)); err != nil {
 		log.Fatal(err)
 	}
 
-	return db
+	if err := db.autoMigration(); err != nil {
+		log.Fatal(err)
+	}
+
+	return db.Database
 }
 
 func generatePsqlInfo() (string, error) {
@@ -57,6 +66,29 @@ func validEnvironmentVar(environmentVariables [6]string) error {
 		if i != 5 && envVar == "" {
 			return errors.New("unable to get environment variables")
 		}
+	}
+	return nil
+}
+
+func (db *Database) autoMigration() error {
+	if err := db.Database.AutoMigrate(&Entities.Guest{}); err != nil {
+		return err
+	}
+
+	if err := db.Database.AutoMigrate(&Entities.HotelAdmin{}); err != nil {
+		return err
+	}
+
+	if err := db.Database.AutoMigrate(&Entities.HotelDetails{}); err != nil {
+		return err
+	}
+
+	if err := db.Database.AutoMigrate(&Entities.Reservation{}); err != nil {
+		return err
+	}
+
+	if err := db.Database.AutoMigrate(&Entities.Rooms{}); err != nil {
+		return err
 	}
 	return nil
 }
