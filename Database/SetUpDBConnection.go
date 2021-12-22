@@ -28,7 +28,7 @@ func SetUpDBConnection() *gorm.DB {
 
 func generatePsqlInfo() (string, error) {
 
-	var environmentVariables []string
+	var environmentVariables [6]string
 	var err error
 
 	if err = godotenv.Load(".env"); err != nil {
@@ -52,7 +52,7 @@ func generatePsqlInfo() (string, error) {
 	return psqlInfo, nil
 }
 
-func validEnvironmentVar(environmentVariables []string) error {
+func validEnvironmentVar(environmentVariables [6]string) error {
 	for i, envVar := range environmentVariables {
 		if i != 5 && envVar == "" {
 			return errors.New("unable to get environment variables")
