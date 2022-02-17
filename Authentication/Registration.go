@@ -56,6 +56,8 @@ func Registration() http.HandlerFunc {
 			//query = `INSERT INTO guests(hotel_admin_id, email, password, phone_no, hotel_id,first_name, last_name created_on, last_modify_on, last_login_ip) VALUES(?, ?, ?, ?, ?, ?)`
 
 			db.Create(&Entities.HotelAdmin{
+				FirstName:    newUser.FirstName,
+				LastName:     newUser.LastName,
 				Email:        newUser.Email,
 				Password:     hashPassword,
 				PhoneNo:      newUser.PhoneNo,

@@ -16,6 +16,7 @@ func HotelOpinions() http.HandlerFunc {
 		var reservationList []Entities.Reservation
 		var opinionDTO DTO.OpinionDTO
 		var opinionList []DTO.OpinionDTO
+		var email string
 
 		hotelID := mux.Vars(request)["id"]
 		hotelIDint, err := strconv.Atoi(hotelID)
@@ -25,16 +26,17 @@ func HotelOpinions() http.HandlerFunc {
 
 		db := Database.SetUpDBConnection()
 
-		query := `SELECT * FROM reservations WHERE hotel_id = ?;`
+		query := `SELECT r.*, ha.email FROM reservations r, hotel_admins ha WHERE r.hotel_id = ? AND ha.hotel_id = r.hotel_id;`
 
 		db.Raw(query, hotelID).Scan(&reservationList)
 
 		for _, reservation := range reservationList {
-			email := ""
 
 			query := `SELECT email FROM guests WHERE guest_id = ?;`
 
 			db.Raw(query, reservation.GuestID).Scan(&email)
+
+			log.Println(email)
 
 			opinionDTO.Email = email
 			opinionDTO.HotelID = hotelIDint

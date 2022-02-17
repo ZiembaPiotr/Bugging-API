@@ -1,7 +1,6 @@
 package Controllers
 
 import (
-	"backend-BD/DTO"
 	"backend-BD/Database"
 	"backend-BD/Entities"
 	"encoding/json"
@@ -28,35 +27,41 @@ func HotelList() http.HandlerFunc {
 	}
 }
 
-func HotelDetails() http.HandlerFunc {
+func Hotel() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		var hotelDetailsDTO DTO.HotelDetailsDTO
-		var hotelDetails Entities.HotelDetails
+		var hotel []Entities.HotelDetails
+
+		hotelID := mux.Vars(request)["id"]
+
+		db := Database.SetUpDBConnection()
+
+		query := `SELECT * FROM hotel_details WHERE hotel_id = ?`
+
+		db.Raw(query, hotelID).Scan(&hotel)
+
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(200)
+		if err := json.NewEncoder(writer).Encode(&hotel); err != nil {
+			log.Println(err)
+		}
+	}
+}
+
+func HotelRooms() http.HandlerFunc {
+	return func(writer http.ResponseWriter, request *http.Request) {
 		var roomsList []Entities.Rooms
 
 		hotelID := mux.Vars(request)["id"]
 
 		db := Database.SetUpDBConnection()
 
-		hotelQuery := `SELECT * FROM hotel_details WHERE hotel_id = ?;`
-
-		db.Raw(hotelQuery, hotelID).Scan(&hotelDetails)
-
 		roomsQuery := `SELECT * FROM rooms WHERE hotel_id = ?;`
 
 		db.Raw(roomsQuery, hotelID).Scan(&roomsList)
 
-		hotelDetailsDTO.HotelID = hotelDetails.HotelID
-		hotelDetailsDTO.Name = hotelDetails.Name
-		hotelDetailsDTO.Country = hotelDetails.Country
-		hotelDetailsDTO.City = hotelDetails.City
-		hotelDetailsDTO.Address = hotelDetails.Address
-		hotelDetailsDTO.Stars = hotelDetails.Stars
-		hotelDetailsDTO.Rooms = roomsList
-
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(200)
-		if err := json.NewEncoder(writer).Encode(&hotelDetailsDTO); err != nil {
+		if err := json.NewEncoder(writer).Encode(&roomsList); err != nil {
 			log.Println(err)
 		}
 	}

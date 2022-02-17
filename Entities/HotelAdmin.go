@@ -2,6 +2,8 @@ package Entities
 
 type HotelAdmin struct {
 	AdminID      int          `gorm:"primaryKey" json:"admin_id"`
+	FirstName    string       `json:"first_name"`
+	LastName     string       `json:"last_name"`
 	Email        string       `json:"email"`
 	Password     string       `json:"password"`
 	PhoneNo      int          `json:"phone_no"`

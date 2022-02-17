@@ -46,7 +46,8 @@ func hotelDetailsRouter(router *mux.Router) {
 	hotelDetails := router.PathPrefix("/hotel-details").Subrouter()
 
 	hotelDetails.HandleFunc("/all", Controllers.HotelList()).Methods("GET")
-	hotelDetails.HandleFunc("/hotel/{id}", Controllers.HotelDetails()).Methods("GET")
+	hotelDetails.HandleFunc("/{id}", Controllers.Hotel()).Methods("GET")
+	hotelDetails.HandleFunc("/hotel/{id}", Controllers.HotelRooms()).Methods("GET")
 }
 
 func opinionsRouter(router *mux.Router) {

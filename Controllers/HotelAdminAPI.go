@@ -58,9 +58,9 @@ func AddHotel() http.HandlerFunc {
 			Stars:   newHotelDTO.Stars,
 		})
 
-		query := `UPDATE hotel_admins SET hotel_id = (SELECT hotel_id FROM hotel_details ORDER BY hotel_id DESC LIMIT 1)`
+		query := `UPDATE hotel_admins SET hotel_id = (SELECT hotel_id FROM hotel_details ORDER BY hotel_id DESC LIMIT 1) WHERE admin_id = ?`
 
-		db.Exec(query)
+		db.Exec(query, newHotelDTO.AdminID)
 
 		query = `SELECT * FROM hotel_details ORDER BY hotel_id DESC LIMIT 1`
 		db.Raw(query).Scan(&newHotel)
