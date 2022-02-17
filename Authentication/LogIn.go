@@ -45,6 +45,7 @@ func LogInGuests() http.HandlerFunc {
 
 		guest.Password = "****************"
 
+		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(200)
 		if err := json.NewEncoder(writer).Encode(guest); err != nil {
 			log.Println(err)
@@ -87,6 +88,7 @@ func LogInAdmin() http.HandlerFunc {
 
 		admin.Password = "****************"
 
+		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(200)
 		if err := json.NewEncoder(writer).Encode(admin); err != nil {
 			log.Println(err)
