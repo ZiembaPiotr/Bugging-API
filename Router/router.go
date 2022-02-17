@@ -1,25 +1,29 @@
 package Router
 
 import (
-	"fmt"
+	"backend-BD/Authentication"
+	"backend-BD/Controllers"
 	"github.com/gorilla/mux"
-	"log"
-	"net/http"
 )
 
 func CreateRouter() *mux.Router {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/test", Test())
+	authenticationRouter(router)
 
 	return router
 }
 
-func Test() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		_, err := fmt.Fprintf(w, "Hello, you've requested: %s\n", r.URL.Path)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
+func authenticationRouter(router *mux.Router) {
+	authenticationRouter := router.PathPrefix("/authentication").Subrouter()
+
+	authenticationRouter.HandleFunc("/registration", Authentication.Registration()).Methods("POST")
+	authenticationRouter.HandleFunc("/log-in-guest", Authentication.LogInGuests()).Methods("POST")
+	authenticationRouter.HandleFunc("/log-in-admin", Authentication.LogInAdmin()).Methods("POST")
+}
+
+func guestsRouter(router *mux.Router) {
+	guestsRouter := router.PathPrefix("guests").Subrouter()
+
+	guestsRouter.HandleFunc("/get-all", Controllers.GetAllGuests()).Methods("GET")
 }
