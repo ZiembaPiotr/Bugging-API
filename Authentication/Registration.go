@@ -67,6 +67,12 @@ func Registration() http.HandlerFunc {
 			})
 		}
 
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(201)
+		if _, err := writer.Write([]byte("Registration went successful")); err != nil {
+			log.Println(err)
+		}
+
 	}
 }
 
